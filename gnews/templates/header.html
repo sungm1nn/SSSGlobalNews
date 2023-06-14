@@ -1,14 +1,24 @@
     <div class="gnews_header">
         <div>
-            <h1 class="gnews_logo">GNEWS</h1>
+            <h1 class="gnews_logo">
+                <a href="{% url 'news:index' %}">
+                    GNEWS
+                </a>
+            </h1>
         </div>
         <div class="gnews_header_navbar">
-            <a>
-                <span>app1</span>
+            {% if not user.is_authenticated %}
+            <a href="{% url 'account_login' %}">
+                <span>Login</span>
             </a>
-            <a>
-                <span>app2</span>
+            <a href="{% url 'account_signup' %}">
+                <span>Signup</span>
             </a>
-
+            {% else %}
+            <a href="{% url 'account_logout' %}">
+                <span>Logout</span>
+            </a>
+            
+            {% endif %}
         </div>
     </div>

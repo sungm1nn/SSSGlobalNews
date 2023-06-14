@@ -16,11 +16,13 @@ Including another URLconf
 from django.conf import settings
 from django.contrib import admin
 from django.urls import include, path
-from django.conf.urls.static import static
 from newsapp.views import index
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('accounts/', include('account.urls')),
+    
+    path('',index,name='index'),
+    path('', include('allauth.urls')),
     path('news/', include('newsapp.urls')),
+    
 ]

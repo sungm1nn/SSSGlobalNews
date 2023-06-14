@@ -44,7 +44,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'account',
+    'accounts',
+    'newsapp',
+    #allauth 는 email 로그인과 소셜 로그인을 위한 3rd party django-app set
+    #https://django-allauth.readthedocs.io/en/latest/index.html
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
 ]
 
 MIDDLEWARE = [
@@ -67,15 +73,39 @@ TEMPLATES = [
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
-                'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                 # `allauth` needs this from django
+                'django.template.context_processors.request',
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = 'gnews.wsgi.application'
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+SITE_ID = 1
+
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_LOGOUT_ON_GET = True
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_PORT = 587
+EMAIL_HOST = 'smtp.naver.com'
+EMAIL_HOST_USER = 'jjsm4690@naver.com'
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 1
+ACCOUNT_EMAIL_SUBJECT_PREFIX = '[이메일 인증]'
 
 
 # Database
@@ -88,6 +118,7 @@ DATABASES = {
     }
 }
 
+AUTH_USER_MODEL = 'accounts.User'
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -111,7 +142,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ko'
 
 TIME_ZONE = 'UTC'
 
@@ -119,6 +150,7 @@ USE_I18N = True
 
 USE_TZ = True
 
+WSGI_APPLICATION = 'gnews.wsgi.application'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
@@ -139,5 +171,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
+ACCOUNT_SIGNUP_REDIRECT_URL = 'index'
+LOGIN_REDIRECT_URL = 'index'
+LOGOUT_REDIRECT_URL = 'index'
